@@ -2,8 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<script src="background.js">
-		</script>
+
 		<style type="text/css">
 			#news{
 				width: 220px;
@@ -11,11 +10,12 @@
 				cursor: pointer;
 			}
 
-			#news div{
+			#news > div{
 				font-family: fantasy;
+				font-size: 15px;
 				background-color: #33ffbb;
 				box-shadow: 2px 2px 2px #888888;
-				padding: 5px 2px;
+				padding: 5px 0px;
 			}
 		</style>
 
@@ -23,9 +23,8 @@
 
 	</head>
 
-	<body>
-		<div id="news">
-
-		</div>
-	</body>
+	<div id = "news">
+	</div>
+	<script src="background.js">
+	</script>
 </html>

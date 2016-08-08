@@ -19,30 +19,11 @@ function refresh(){
 function main(page){
   console.log("main(page)");
   var i = 0;
-  //var allKeys;
-  //var htmlDoc = document.createElement('html');
-  //htmlDoc.innerHTML = page;
-  // //var divs = [];
-  // divs = document.createElement('html');
-  // divs.innerHTML = htmlDoc.getElementsByClassName("home-news-primary-item-holder")[0].innerHTML;
-  //console.log(divs);
-
-  //console.log getDiv(page,0).getElementsByTagName("a")[0].getAttribute("href"));
-
-  // storage.get(null, function(items) {
-  //   function allKeys(){
-  //     return items;
-  //   };
-  //   console.log(allKeys().hasOwnProperty('top_news'));
-  // });
-  //var keys = getAllFromStorage();
-  //console.log(keys);
   if (storage.hasOwnProperty('top_news')) {
     console.log("has 'top_news' !!");
     var topNews = storage.top_news;
-    //console.log('topNews',topNews);
-
     while (getDiv(page,i).getElementsByTagName("a")[0].getAttribute("href") != topNews) {
+      console.log(getDiv(page,i).getElementsByTagName("a")[0].getAttribute("href"));
       i++;
     }
   }
@@ -53,40 +34,48 @@ function main(page){
   }
 
   if (i == 0) {
+    //set browserAction title to no new news
     console.log("i=0");
     updateIcon(0);
     chrome.browserAction.setTitle({title:"No new updates!"});
     chrome.browserAction.onClicked.addListener(function(){
-      gotoPage(url_news)
+      gotoPage(url_news);
     });
-    //set browserAction title to no new news
   }
   else {
     updateIcon(i);
     chrome.browserAction.setPopup({popup:'popup.html'});
     chrome.browserAction.setTitle({title:"Updates available!"});
     console.log("i!=0 popup onClick");
-    for (var j = 0; j <= i; j++) {
+    for (var j = 0; j < i; j++) {
       var div = document.createElement("div");
       console.log("div created");
       var string = getDiv(page,j).getElementsByTagName("a")[0].getAttribute("data-label");
       var news = document.createTextNode(string.substring(string.lastIndexOf("-")+2));
-      console.log(news);
+      //console.log(news);
       div.appendChild(news);
       console.log(div);
-      document.getElementById('news').appendChild(div);
+      // var k = document.getElementById('news');
+      // if (k != null){
+      //   k.appendChild(div)
+      // }
+      // div.onload = function(){
+      //   console.log("onload");
+      //   document.getElementById('news').appendChild(div);
+      // };
+      document.getElementById("news").appendChild(div);
       console.log("generating news link...");
       var news_link = [url_main , getDiv(page,j).getElementsByTagName("a")[0].getAttribute("href")].join('');
-      div.addEventListener("click",function(){
+      div.onClick = function(){
         gotoPage(news_link);
-      });
+      };
 
       //get new news divs[i] and display on the popup page
       //divs onclick link to the specified news page
     }
-    console.log("outside for");
     var news_str = getDiv(page,0).getElementsByTagName("a")[0].getAttribute("href");
     storage.top_news = news_str;
+    console.log("top_news updated !!");
   }
 }
 
@@ -102,6 +91,7 @@ function gotoPage(link){
       console.log(tab.url);
       if(tab.url == link){
         chrome.tabs.update(tab.id,{highlighted:true});
+        return;
       }
     }
     chrome.tabs.create({url: link});
