@@ -51,7 +51,7 @@ function main(page){
       var div = document.createElement("div");
       console.log("div created");
       var string = getDiv(page,j).getElementsByTagName("a")[0].getAttribute("data-label");
-      var news = document.createTextNode(string.substring(string.lastIndexOf("-")+2));
+      var news = document.createTextNode(string.substring(string.lastIndexOf("Image")+8));
       //console.log(news);
       div.appendChild(news);
       console.log(div);
